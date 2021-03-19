@@ -93,7 +93,7 @@
                     var warpingDD = warpingGroup.add("dropdownlist", undefined, ["Inverse", "Inverse w/ Smart Blend", "Forward", "Forward, no Smart Blend"]);
                         warpingDD.preferredSize.width = inputWidth;
                         warpingDD.selection = 0;
-                var mainBgSensitivityGroup = twixtorParamPanel.add("group", undefined, "frameRate");
+                var mainBgSensitivityGroup = twixtorParamPanel.add("group", undefined, "mainBgSensitivity");
                     mainBgSensitivityGroup.orientation = "row";
                     var mainBgSensitivityText = mainBgSensitivityGroup.add("statictext", undefined, "Main_BG Sensitivity: ");
                         mainBgSensitivityText.preferredSize.width = textWidth;
@@ -113,6 +113,7 @@
                     twixtorParams["Image Prep"] = imagePrepDD.selection.index + 1;
                     twixtorParams["Speed %"] = Number(speed.text);
                     twixtorParams["Warping"] = warpingDD.selection.index + 1;
+                    twixtorParams["Frame Interp"] = frameInterpDD.selection.index + 1;
                     return twixtorParams;
                 } else {
                     throw "Error occurred during twixtor param collecting: Only number values can be accepted.";
