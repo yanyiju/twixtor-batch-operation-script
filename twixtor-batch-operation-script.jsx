@@ -7,7 +7,7 @@
     {
         function TBO_buildUI(thisObj)
         {
-            var win = (thisObj instanceof Panel) ? thisObj : new Window("palette", "Repetitive Frame Remover", undefined);
+            var win = (thisObj instanceof Panel) ? thisObj : new Window("palette", "Twixtor Batch Operation Script", undefined);
             win.spacing = 5;
 
             // const graphic size variables
@@ -79,6 +79,13 @@
                         speedText.preferredSize.width = textWidth;
                     var speed = speedGroup.add("edittext", undefined, 100);
                         speed.preferredSize.width = inputWidth;
+                var frameInterpGroup = twixtorParamPanel.add("group", undefined, "frameInterp");
+                    frameInterpGroup.orientation = "row";
+                    var frameInterpText = frameInterpGroup.add("statictext", undefined, "Frame Interp: ");
+                        frameInterpText.preferredSize.width = textWidth;
+                    var frameInterpDD = frameInterpGroup.add("dropdownlist", undefined, ["Nearest", "Blend", "Motion Weighted Blend"]);
+                        frameInterpDD.preferredSize.width = inputWidth;
+                        frameInterpDD.selection = 1;
                 var warpingGroup = twixtorParamPanel.add("group", undefined, "warping");
                     warpingGroup.orientation = "row";
                     var warpingText = warpingGroup.add("statictext", undefined, "Warping: ");
@@ -130,7 +137,7 @@
                         helpWin instanceof Window
                             ? (helpWin.center(), helpWin.show()) : (helpWin.layout.layout(true), helpWin.layout.resize());
                     }
-                var refreshBtn = buttonGroup.add("button", undefined, "Refresh");
+                var refreshBtn = buttonGroup.add("button", undefined, "Refresh Current Item");
                     refreshBtn.onClick = function(){
                         curComp = getCurrentComp();
                         activeLayerIDs = getActiveLayerIDs(curComp);
@@ -138,7 +145,7 @@
                         refreshDisplay(displayItem, app.project.activeItem.name);
                         refreshDD(layerDD, activeLayerNames);
                     };
-                var actBtn = buttonGroup.add("button", undefined, "Take the action");
+                var actBtn = buttonGroup.add("button", undefined, "Here we go!!!");
                     actBtn.onClick = function(){
                         // when curComp is null
                         if (curComp == null) {
