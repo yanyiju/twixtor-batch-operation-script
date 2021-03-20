@@ -13,6 +13,7 @@
             // const graphic size variables
             const textWidth = 200;
             const inputWidth = 300;
+            const halfSizeWidth = (textWidth + inputWidth) / 2;
 
             // dropdown list choice data collection (initialization)
             var curComp = getCurrentComp();
@@ -100,7 +101,6 @@
                     var mainBgSensitivity = mainBgSensitivityGroup.add("edittext", undefined, 100);
                         mainBgSensitivity.preferredSize.width = inputWidth;
 
-
             // function of retrieving param inputs from twixtor panel
             function getTwixtorParams(comp)
             {
@@ -121,117 +121,127 @@
             }
 
             // Group of buttons
-            var buttonGroup = win.add("group", undefined, "button");
+            var buttonGroup = win.add("group {alignment: 'right'}", undefined, "button");
                 buttonGroup.orientation = "row";
                 buttonGroup.margins.top = 15;
-                var helpBtn = buttonGroup.add("button", undefined, "Help/About this script");
-                    helpBtn.onClick = function() {
-                        var helpWin = new Window("palette", "Help", undefined);
-                        var infoText = "This private script is totally free to use and available on Github.\n" + 
-                            "Github page: https://github.com/yanyiju/twixtor-batch-operation-script\n" +
-                            "You can raise any of your questions in the issue tab.\n" + 
-                            "Thanks for your feedback.\n\n" +
-                            "© Copyright Yijun Yan 2021";
-                        var info = helpWin.add("statictext", undefined, infoText, {multiline:true});
-                        info.preferredSize.width = 400;
-                        helpWin.onResizing = helpWin.onResize = function(){this.layout.resize();};
-                        helpWin instanceof Window
-                            ? (helpWin.center(), helpWin.show()) : (helpWin.layout.layout(true), helpWin.layout.resize());
-                    }
-                var refreshBtn = buttonGroup.add("button", undefined, "Refresh Current Item");
-                    refreshBtn.onClick = function(){
-                        curComp = getCurrentComp();
-                        activeLayerIDs = getActiveLayerIDs(curComp);
-                        activeLayerNames = getActiveLayerNames(curComp, activeLayerIDs);
-                        refreshDisplay(displayItem, app.project.activeItem.name);
-                        refreshDD(layerDD, activeLayerNames);
-                    };
-                var actBtn = buttonGroup.add("button", undefined, "Here we go!!!");
-                    actBtn.onClick = function(){
-                        // when curComp is null
-                        if (curComp == null) {
-                            alert("You haven't selected an composition!");
-                            return;
+                var helpBtnGroup = buttonGroup.add("group", undefined, "helpBtnGroup");
+                    helpBtnGroup.preferredSize.width = halfSizeWidth;
+                    helpBtnGroup.alignment = "left";
+                    var helpBtn = helpBtnGroup.add("button", undefined, "Help/About this script");
+                        helpBtn.onClick = function() {
+                            var helpWin = new Window("palette", "Help", undefined);
+                            var infoText = "This private script is totally free to use and available on Github.\n" + 
+                                "Github page: https://github.com/yanyiju/twixtor-batch-operation-script\n" +
+                                "You can raise any of your questions in the issue tab.\n" + 
+                                "Thanks for your feedback.\n\n" +
+                                "© Copyright Yijun Yan 2021";
+                            var info = helpWin.add("statictext", undefined, infoText, {multiline:true});
+                            info.preferredSize.width = 400;
+                            helpWin.onResizing = helpWin.onResize = function(){this.layout.resize();};
+                            helpWin instanceof Window
+                                ? (helpWin.center(), helpWin.show()) : (helpWin.layout.layout(true), helpWin.layout.resize());
                         }
-
-                        // build folder structure
-                        var scriptFolder = getFolderItemByName(scriptFolderName, null);
-                        var precompFolder = getFolderItemByName(precompFolderName, scriptFolder);
-                        var curCompFolder = getFolderItemByName(curComp.name, precompFolder);
-                        var curPrecomp1Folder = getFolderItemByName("precomp1", curCompFolder);
-                        var curPrecomp2Folder = getFolderItemByName("precomp2", curCompFolder);
-
-                        // find the final result comp for user to operate, or create a new one if not existed
-                        var resultCompName = curComp.name + "_script";
-                        var resultCompBackupName = resultCompName + "_backup";
-                        var resultComp = checkItemInFolder(resultCompName, CompItem, scriptFolder);
-                        var resultCompBackup = checkItemInFolder(resultCompBackupName, CompItem, scriptFolder);
-                        var isInitialOperation = resultComp == null;
-                        if (resultComp == null) {
-                            resultComp = curComp.duplicate();
-                            resultComp.parentFolder = scriptFolder;
-                            resultComp.name = resultCompName;
-                        } 
-                        if (resultCompBackup != null) {
-                            resultCompBackup.remove();
-                        }
-                        resultCompBackup = resultComp.duplicate();
-                        resultCompBackup.name = resultCompBackupName;
-
-                        // 'precomps' stores all script-built comps during this click action
-                        var precomps = [];
-
-                        // build twixtor-related structure
-                        try {
-                            // set the frame rate of result comp
-                            if (isValid(outputFrameRate.text)) {
-                                resultComp.frameDuration = 1/Number(outputFrameRate.text);
+                var operationBtnGroup = buttonGroup.add("group", undefined, "operationBtnGroup");
+                    operationBtnGroup.orientation = "row";
+                    operationBtnGroup.preferredSize.width = halfSizeWidth;
+                    var refreshBtn = operationBtnGroup.add("button", undefined, "Refresh Current Item");
+                        refreshBtn.onClick = function(){
+                            curComp = getCurrentComp();
+                            activeLayerIDs = getActiveLayerIDs(curComp);
+                            activeLayerNames = getActiveLayerNames(curComp, activeLayerIDs);
+                            if (curComp != null) {
+                                refreshDisplay(displayItem, curComp.name);
                             } else {
-                                throw "Only number values can be accepted in output frame rate setting.";
+                                alert("No active composition detected! Please open or select a composition.");
+                            }
+                            refreshDD(layerDD, activeLayerNames);
+                        };
+                    var actBtn = operationBtnGroup.add("button", undefined, "Here we go!!!");
+                        actBtn.onClick = function(){
+                            // when curComp is null
+                            if (curComp == null) {
+                                alert("You haven't selected an composition!");
+                                return;
                             }
 
-                            // get all target layers' ids
-                            var targetLayerIDs = null;
-                            if (layerDD.selection != null) {
-                                targetLayerIDs = [activeLayerIDs[layerDD.selection.index]];
-                            }
-                            if (checkbox.value) {
-                                targetLayerIDs = activeLayerIDs;
-                            }
+                            // build folder structure
+                            var scriptFolder = getFolderItemByName(scriptFolderName, null);
+                            var precompFolder = getFolderItemByName(precompFolderName, scriptFolder);
+                            var curCompFolder = getFolderItemByName(curComp.name, precompFolder);
+                            var curPrecomp1Folder = getFolderItemByName("precomp1", curCompFolder);
+                            var curPrecomp2Folder = getFolderItemByName("precomp2", curCompFolder);
 
-                            // main service part
-                            for (var i = 0; i < targetLayerIDs.length; i++) {
-                                var twixtorParams = getTwixtorParams(curComp);
-                                var targetLayerID = targetLayerIDs[i];
-                                var targetLayerName = resultComp.layer(targetLayerID).name;
-                                if (targetLayerName.match(/[\S]+_precomp2/) != null) {
-                                    alert("Comp (" + targetLayerName + ") already exists. Ignored!");
-                                } else if (twixtorParams != undefined) {
-                                    var comps = precompseAndApplyTwixtor(resultComp, targetLayerID, twixtorParams, curPrecomp1Folder, curPrecomp2Folder);
-                                    precomps = precomps.concat(comps);
-                                }
-                            }
-
-                            // update and display result comp
-                            resultComp.openInViewer().setActive();
-                            resultCompBackup.remove();
-                        } catch(err) {
-                            // remove the new-built comps in this operation        
-                            for (var i = 0; i < precomps.length; i++) {
-                                precomps[i].remove();
-                            }
-
-                            // recover the original result comp if it existed
-                            resultComp.remove();
-                            if (isInitialOperation) {
+                            // find the final result comp for user to operate, or create a new one if not existed
+                            var resultCompName = curComp.name + "_script";
+                            var resultCompBackupName = resultCompName + "_backup";
+                            var resultComp = checkItemInFolder(resultCompName, CompItem, scriptFolder);
+                            var resultCompBackup = checkItemInFolder(resultCompBackupName, CompItem, scriptFolder);
+                            var isInitialOperation = resultComp == null;
+                            if (resultComp == null) {
+                                resultComp = curComp.duplicate();
+                                resultComp.parentFolder = scriptFolder;
+                                resultComp.name = resultCompName;
+                            } 
+                            if (resultCompBackup != null) {
                                 resultCompBackup.remove();
-                            } else {
-                                resultCompBackup.name = resultCompName;
                             }
+                            resultCompBackup = resultComp.duplicate();
+                            resultCompBackup.name = resultCompBackupName;
 
-                            alert(err);
-                        }
-                    };
+                            // 'precomps' stores all script-built comps during this click action
+                            var precomps = [];
+
+                            // build twixtor-related structure
+                            try {
+                                // set the frame rate of result comp
+                                if (isValid(outputFrameRate.text)) {
+                                    resultComp.frameDuration = 1/Number(outputFrameRate.text);
+                                } else {
+                                    throw "Only number values can be accepted in output frame rate setting.";
+                                }
+
+                                // get all target layers' ids
+                                var targetLayerIDs = null;
+                                if (layerDD.selection != null) {
+                                    targetLayerIDs = [activeLayerIDs[layerDD.selection.index]];
+                                }
+                                if (checkbox.value) {
+                                    targetLayerIDs = activeLayerIDs;
+                                }
+
+                                // main service part
+                                for (var i = 0; i < targetLayerIDs.length; i++) {
+                                    var twixtorParams = getTwixtorParams(curComp);
+                                    var targetLayerID = targetLayerIDs[i];
+                                    var targetLayerName = resultComp.layer(targetLayerID).name;
+                                    if (targetLayerName.match(/[\S]+_precomp2/) != null) {
+                                        alert("Comp (" + targetLayerName + ") already exists. Ignored!");
+                                    } else if (twixtorParams != undefined) {
+                                        var comps = precompseAndApplyTwixtor(resultComp, targetLayerID, twixtorParams, curPrecomp1Folder, curPrecomp2Folder);
+                                        precomps = precomps.concat(comps);
+                                    }
+                                }
+
+                                // update and display result comp
+                                resultComp.openInViewer().setActive();
+                                resultCompBackup.remove();
+                            } catch(err) {
+                                // remove the new-built comps in this operation        
+                                for (var i = 0; i < precomps.length; i++) {
+                                    precomps[i].remove();
+                                }
+
+                                // recover the original result comp if it existed
+                                resultComp.remove();
+                                if (isInitialOperation) {
+                                    resultCompBackup.remove();
+                                } else {
+                                    resultCompBackup.name = resultCompName;
+                                }
+
+                                alert(err);
+                            }
+                        };
 
             win.onResizing = win.onResize = function() {
                 this.layout.resize();

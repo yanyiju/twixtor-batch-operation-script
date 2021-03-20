@@ -10,6 +10,8 @@
 ![截图](screenshot.png)<br>
 脚本运行截图。
 
+***Repetitive Frame Rate***（重复帧率）指的是每个独特场景会持续几帧，俗称一拍几。举个例子，对于一个24fps动漫视频，这个值通常是2（一拍二）或3（一拍三），即每幅原画会持续2到3帧，所以视频中的每秒24帧需要24/2=12或者24/3=8幅原画。对于其他三次元拍摄的视频，这个重复率通常是1。脚本需要通过这个值来修改twixtor的输入帧率参数（Input: Frame Rate），从而去除重复帧。
+
 # 安装
 请将```.jsx```脚本文件放置于
 
@@ -19,7 +21,7 @@
 
 * :open_file_folder: ```<Ae安装文件夹>/support file/script/ScriptUI Panels/```
 
-然后重启Ae后，在一下菜单栏中找到并运行
+然后重启Ae后，在以下菜单栏中找到并运行
 
 * <kbd>file</kbd>><kbd>scripts</kbd>><kbd>twixtor-batch-operation-script.jsx</kbd> 
 
