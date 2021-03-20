@@ -76,7 +76,7 @@
                         imagePrepDD.selection = 0;
                 var speedGroup = twixtorParamPanel.add("group", undefined, "speed");
                     speedGroup.orientation = "row";
-                    var speedText = speedGroup.add("statictext", undefined, "Speed %");
+                    var speedText = speedGroup.add("statictext", undefined, "Speed %: ");
                         speedText.preferredSize.width = textWidth;
                     var speed = speedGroup.add("edittext", undefined, 100);
                         speed.preferredSize.width = inputWidth;
