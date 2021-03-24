@@ -217,7 +217,7 @@
                                     if (targetLayerName.match(/[\S]+_precomp2/) != null) {
                                         alert("Comp (" + targetLayerName + ") already exists. Ignored!");
                                     } else if (twixtorParams != undefined) {
-                                        var comps = precompseAndApplyTwixtor(resultComp, targetLayerID, twixtorParams, curPrecomp1Folder, curPrecomp2Folder);
+                                        var comps = precomposeAndApplyTwixtor(resultComp, targetLayerID, twixtorParams, curPrecomp1Folder, curPrecomp2Folder);
                                         precomps = precomps.concat(comps);
                                     }
                                 }
@@ -277,7 +277,7 @@
 
         // main service function: build precomps and add twixtor effects over precomp1 layers
         // precomp2 layers are used for speed adjusting in final comp
-        function precompseAndApplyTwixtor(comp, layerID, twixtorParams, precomp1Folder, precomp2Folder)
+        function precomposeAndApplyTwixtor(comp, layerID, twixtorParams, precomp1Folder, precomp2Folder)
         {
             try {
                 // define the names of 2 precomp
@@ -309,7 +309,7 @@
 
                 return [firstComp, secondComp];
             } catch(err) {
-                throw("Error happens during precompseAndApplyTwixtor: " + err);
+                throw("Error happens during precomposeAndApplyTwixtor: " + err);
             }
         }
 
