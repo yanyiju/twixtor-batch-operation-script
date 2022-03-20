@@ -340,11 +340,17 @@
             return activeLayerIDs;
         }
 
-        // get names of all active video layers, match usage with getActiveLayerIDs
-        function getActiveLayerNames(comp, ids)
+        // get names of all active video layers, consistent with getActiveLayerIDs in size
+        function getActiveLayerNames(comp)
         {
             if (comp === null) return [];
-            return ids.map(function(id){return "Layer " + id.toString() + ": " + comp.layer(id).name});
+            var activeLayerNames = [];
+            for (var i = 1; i <= comp.numLayers; i++) {
+                if (isVideoLayer(comp.layer(i))) {
+                    activeLayerNames.push("Layer " + i.toString() + ": " + comp.layer(i).name);
+                }
+            }
+            return activeLayerNames;
         }
 
         // mainly used for refreshing static text
