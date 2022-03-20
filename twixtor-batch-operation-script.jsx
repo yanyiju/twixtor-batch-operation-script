@@ -18,7 +18,7 @@
             // dropdown list choice data collection (initialization)
             var curComp = getCurrentComp();
             var activeLayerIDs = getActiveLayerIDs(app.project.activeItem);
-            var activeLayerNames = getActiveLayerNames(curComp, activeLayerIDs);
+            var activeLayerNames = getActiveLayerNames(curComp);
 
             // Group of current active item display
             var activeItemDisplayGroup = win.add("group", undefined, "active item display");
@@ -148,7 +148,7 @@
                         refreshBtn.onClick = function(){
                             curComp = getCurrentComp();
                             activeLayerIDs = getActiveLayerIDs(curComp);
-                            activeLayerNames = getActiveLayerNames(curComp, activeLayerIDs);
+                            activeLayerNames = getActiveLayerNames(curComp);
                             if (curComp != null) {
                                 refreshDisplay(displayItem, curComp.name);
                             } else {
